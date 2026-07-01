@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: ydays_db
+    environment:
+      POSTGRES_USER: ydays_user
+      POSTGRES_PASSWORD: ydays_password
+      POSTGRES_DB: ydays_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ydays_user -d ydays_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: ydays_mail
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Interface web
+
+  api:
+    build: .
+    container_name: ydays_api
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+    environment:
+      DATABASE_URL: "postgresql://ydays_user:ydays_password@postgres:5432/ydays_db"
+      SECRET_KEY: "your-secret-key-change-in-production"
+      ALGORITHM: "HS256"
+      ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+      WATCHFILES_FORCE_POLLING: "true"
+      MINIO_ENDPOINT: "minio:9000"
+      MINIO_ACCESS_KEY: "minioadmin"
+      MINIO_SECRET_KEY: "minioadminpassword"
+      MINIO_BUCKET_NAME: "document"
+      REDIS_URL: "redis://redis:6379/0"
+      # SMTP → MailHog (pas besoin d'username/password)
+      MAIL_USERNAME: ""
+      MAIL_PASSWORD: ""
+      MAIL_FROM: "noreply@ydays.com"
+      MAIL_FROM_NAME: "Ydays RH"
+      MAIL_PORT: "1025"
+      MAIL_SERVER: "mailhog"
+      MAIL_STARTTLS: "False"
+      MAIL_SSL_TLS: "False"
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    command: sh -c "python init_db.py && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+
+  minio:
+    image: minio/minio:latest
+    container_name: ydays_minio
+    ports:
+      - "9000:9000"       # API MinIO
+      - "9001:9001"       # Console Web MinIO
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadminpassword
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+
+  redis:
+    image: redis:7-alpine
+    container_name: ydays_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  front:
+    image: node:20-alpine
+    container_name: ydays_front
+    working_dir: /app
+    volumes:
+      - ../front:/app
+      # Prevents local node_modules from overriding the container's node_modules
+      - /app/node_modules
+    ports:
+      - "3000:5173"
+    environment:
+      # Fix file watching on Windows/Docker
+      - CHOKIDAR_USEPOLLING=true
+      # Point the vite proxy to the api container instead of localhost
+      - VITE_API_PROXY_TARGET=http://api:8000
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    depends_on:
+      api:
+        condition: service_started
+
+volumes:
+  postgres_data:
+  minio_data:
+  redis_data:

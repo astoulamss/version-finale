@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: ydays_db
+    environment:
+      POSTGRES_USER: ydays_user
+      POSTGRES_PASSWORD: ydays_password
+      POSTGRES_DB: ydays_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

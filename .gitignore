@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.expo/
+.vite/
+coverage/
+*.local
+*.log
+*.tsbuildinfo

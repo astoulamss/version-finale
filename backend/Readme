@@ -1,0 +1,11 @@
+# ydays
+
+Projet en cours 
+
+## Description
+Ce projet vise à créer une plateforme RH augmentée par l’IA
+
+## Installation
+```bash
+git clone https://github.com/akmeljean/ydays.git
+cd ydays

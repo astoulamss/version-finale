@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "YDAYS 2026 IA RH",
+    "slug": "ydays-2026-ia-rh",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#1f3b42"
+      }
+    },
+    "plugins": [
+      "expo-font",
+      "expo-secure-store",
+      "@react-native-community/datetimepicker",
+      [
+        "expo-notifications",
+        {
+          "color": "#1f3b42",
+          "iosDisplayInForeground": true
+        }
+      ]
+    ],
+    "notification": {
+      "color": "#1f3b42",
+      "androidMode": "default"
+    }
+  }
+}
