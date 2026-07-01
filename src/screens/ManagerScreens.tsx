@@ -365,8 +365,8 @@ export function ManagerTasksScreen({ sessionProfile, ui }: { sessionProfile: Emp
           
           {/* Filtre Membres */}
           <View style={{ position: 'relative', zIndex: 110, marginRight: 8 }}>
-            <Pressable 
-              onPress={() => console.log("clicked")}
+            <Pressable
+              onPress={() => { setShowMemberFilterDropdown(!showMemberFilterDropdown); setShowStatusFilterDropdown(false); }}
               style={{ borderWidth: 1, borderColor: theme.line, borderRadius: 6, paddingHorizontal: 12, paddingVertical: 6, backgroundColor: theme.card }}
             >
               <Text style={{ color: theme.text, fontSize: 14 }}>
@@ -377,8 +377,8 @@ export function ManagerTasksScreen({ sessionProfile, ui }: { sessionProfile: Emp
             </Pressable>
             {showMemberFilterDropdown && (
               <ScrollView style={{ position: 'absolute', top: 35, left: 0, minWidth: 150, maxHeight: 200, backgroundColor: theme.card, borderRadius: 6, borderWidth: 1, borderColor: theme.line, elevation: 5, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 4, zIndex: 120 }}>
-                <Pressable 
-                  onPress={() => console.log("clicked")}
+                <Pressable
+                  onPress={() => { setMemberFilter('all'); setShowMemberFilterDropdown(false); }}
               style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: theme.line, backgroundColor: memberFilter === 'all' ? theme.skySoft : 'transparent' }}
                 >
                   <Text style={{ color: memberFilter === 'all' ? theme.sky : theme.text, fontWeight: memberFilter === 'all' ? 'bold' : 'normal' }}>Tous les membres</Text>
@@ -388,9 +388,9 @@ export function ManagerTasksScreen({ sessionProfile, ui }: { sessionProfile: Emp
                   const empName = emp.user ? `${emp.user.prenom} ${emp.user.nom}` : emp.name;
                   const isSelected = memberFilter === empId.toString();
                   return (
-                    <Pressable 
-                      key={empId} 
-                      onPress={() => console.log("clicked")}
+                    <Pressable
+                      key={empId}
+                      onPress={() => { setMemberFilter(empId.toString()); setShowMemberFilterDropdown(false); }}
               style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: theme.line, backgroundColor: isSelected ? theme.skySoft : 'transparent' }}
                     >
                       <Text style={{ color: isSelected ? theme.sky : theme.text, fontWeight: isSelected ? 'bold' : 'normal' }}>{empName}</Text>
@@ -403,8 +403,8 @@ export function ManagerTasksScreen({ sessionProfile, ui }: { sessionProfile: Emp
 
           {/* Filtre Statut */}
           <View style={{ position: 'relative', zIndex: 100 }}>
-            <Pressable 
-              onPress={() => console.log("clicked")}
+            <Pressable
+              onPress={() => { setShowStatusFilterDropdown(!showStatusFilterDropdown); setShowMemberFilterDropdown(false); }}
               style={{ borderWidth: 1, borderColor: theme.line, borderRadius: 6, paddingHorizontal: 12, paddingVertical: 6, backgroundColor: theme.card }}
             >
               <Text style={{ color: theme.text, fontSize: 14 }}>
@@ -424,9 +424,9 @@ export function ManagerTasksScreen({ sessionProfile, ui }: { sessionProfile: Emp
                   { value: 'done', label: 'Terminée' },
                   { value: 'cancelled', label: 'Annulée' }
                 ].map(opt => (
-                  <Pressable 
-                    key={opt.value} 
-                    onPress={() => console.log("clicked")}
+                  <Pressable
+                    key={opt.value}
+                    onPress={() => { setStatusFilter(opt.value); setShowStatusFilterDropdown(false); }}
               style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: theme.line, backgroundColor: statusFilter === opt.value ? theme.skySoft : 'transparent' }}
                   >
                     <Text style={{ color: statusFilter === opt.value ? theme.sky : theme.text, fontWeight: statusFilter === opt.value ? 'bold' : 'normal' }}>{opt.label}</Text>
@@ -583,7 +583,7 @@ export function ManagerTasksScreen({ sessionProfile, ui }: { sessionProfile: Emp
                   <Feather name="calendar" size={16} color={theme.text} />
                 </Pressable>
                 {showDatePicker && (
-                  <DateTimePicker
+                  <DateTimePicker themeVariant="light" textColor="#000000" 
                     value={formTask.due_date ? new Date(formTask.due_date) : new Date()}
                     mode="date"
                     display="default"
@@ -989,11 +989,11 @@ export function ManagerEmployeeDetailScreen({ employeeId, ui, sessionProfile }: 
         <View style={ui.styles.infoGrid}>
           <Card ui={ui} style={{flex: 1}}>
             <Text style={ui.styles.bodyStrong}>Score Engagement</Text>
-            <Text style={ui.styles.progressValue}>{detail.engagement_score}%</Text>
+            <Text style={ui.styles.progressValue}>{detail.engagement_score != null ? `${detail.engagement_score}%` : "N/A"}</Text>
           </Card>
           <Card ui={ui} style={{flex: 1}}>
             <Text style={ui.styles.bodyStrong}>Risque Départ</Text>
-            <Text style={ui.styles.progressValue}>{detail.turnover_risk}</Text>
+            <Text style={ui.styles.progressValue}>{detail.turnover_risk != null ? `${detail.turnover_risk}%` : "N/A"}</Text>
           </Card>
         </View>
         
@@ -1074,7 +1074,7 @@ export const ManagerHubScreen: React.FC<{
         </Pressable>
 
         <View style={{ gap: 16, marginBottom: 40 }}>
-        <Text style={[styles.bodyStrong, { marginTop: 24, marginBottom: 8 }]}>Vos cartes (Prochainement)</Text>
+        <Text style={[styles.bodyStrong, { marginTop: 24, marginBottom: 8 }]}>Vos cartes</Text>
         
         <View style={{ flexDirection: 'row', gap: 16, flexWrap: 'wrap' }}>
           <Pressable 
@@ -1107,27 +1107,15 @@ export const ManagerHubScreen: React.FC<{
             <Text style={{ fontSize: 12, color: theme.muted }}>Suivi de l'onboarding.</Text>
           </Pressable>
 
-          <View
+          <Pressable
+            onPress={() => onNavigate('manager_offboarding')}
             style={{ flex: 1, minWidth: 150, padding: 20, backgroundColor: theme.card, borderWidth: 1, borderColor: '#6366f1' + '40', borderRadius: 16 }}>
             <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#6366f115', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
               <Feather name="log-out" size={20} color="#6366f1" />
             </View>
             <Text style={[styles.bodyStrong, { marginBottom: 4 }]}>Offboarding</Text>
-            <View style={{ flexDirection: 'row', gap: 6, marginTop: 8 }}>
-              <Pressable 
-                onPress={() => console.log("clicked")}
-              style={{ backgroundColor: '#6366f115', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 6 }}
-              >
-                <Text style={{ fontSize: 11, color: '#6366f1', fontWeight: '600' }}>En cours</Text>
-              </Pressable>
-              <Pressable 
-                onPress={() => console.log("clicked")}
-              style={{ backgroundColor: theme.surfaceAlt, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 6 }}
-              >
-                <Text style={{ fontSize: 11, color: theme.muted, fontWeight: '600' }}>Historique</Text>
-              </Pressable>
-            </View>
-          </View>
+            <Text style={{ fontSize: 12, color: theme.muted }}>Suivi des départs.</Text>
+          </Pressable>
         </View>
         </View>
 

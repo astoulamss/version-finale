@@ -491,7 +491,7 @@ export const ManagerAbsencesScreen: React.FC<{
 
               {showPicker && (
                 <View style={{ backgroundColor: theme.background, borderRadius: 12, padding: 12, marginBottom: 20 }}>
-                  <DateTimePicker
+                  <DateTimePicker themeVariant="light" textColor="#000000" 
                     value={currentPickerDate}
                     mode="date"
                     display={Platform.OS === "ios" ? "inline" : "default"}
@@ -567,9 +567,9 @@ export const ManagerAbsencesScreen: React.FC<{
                 const prenom = member.user?.prenom || member.prenom || "";
                 const nom = member.user?.nom || member.nom || "";
                 return (
-                  <Pressable 
+                  <Pressable
                     key={member.user_id}
-                    onPress={() => {}}
+                    onPress={() => { setSelectedEmployeeId(member.user_id); setShowEmployeeModal(false); }}
               style={{ paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: theme.line, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Text style={{ color: theme.text, fontSize: 16 }}>{prenom} {nom}</Text>
                     {selectedEmployeeId === member.user_id && <Feather name="check" size={20} color={theme.sky} />}
@@ -591,9 +591,9 @@ export const ManagerAbsencesScreen: React.FC<{
               </Pressable>
             </View>
             {[{id: 'maladie', label: 'Arrêt Maladie'}, {id: 'retard', label: 'Retard'}, {id: 'injustifie', label: 'Injustifiée'}, {id: 'autre', label: 'Autre'}].map(type => (
-              <Pressable 
+              <Pressable
                 key={type.id}
-                onPress={() => {}}
+                onPress={() => { setAbsenceType(type.id); setShowTypeModal(false); }}
               style={{ paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: theme.line, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Text style={{ color: theme.text, fontSize: 16 }}>{type.label}</Text>
                 {absenceType === type.id && <Feather name="check" size={20} color={theme.sky} />}

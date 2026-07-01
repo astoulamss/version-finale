@@ -229,7 +229,7 @@ def create_hr_ticket(
         employee_id=target_user.id,
         subject=subject,
         description=description or None,
-        status=TicketStatusEnum.OPEN,
+        status="open",
     )
     db.add(ticket)
     db.flush()

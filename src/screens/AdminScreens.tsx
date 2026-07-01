@@ -82,10 +82,7 @@ export function AdminDashboardScreen({ ui: propUi, onNavigate, sessionProfile, t
                     <Feather name="users" size={14} color={theme.text} />
                     <Text style={[styles.metaText, { fontSize: 11, fontWeight: '600' }]}>UTILISATEURS ACTIFS</Text>
                   </View>
-                  <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}>
-                    <Text style={[styles.heroTitle, { fontSize: 28, marginVertical: 0 }]}>{data?.kpis?.active_users || 0}</Text>
-                    <Text style={{ color: theme.emerald, fontSize: 12, fontWeight: '500' }}>+12 ce mois</Text>
-                  </View>
+                  <Text style={[styles.heroTitle, { fontSize: 28, marginVertical: 0 }]}>{data?.kpis?.active_users || 0}</Text>
                </Card>
                
                <Card ui={ui} style={{ width: '48%', padding: 16, backgroundColor: '#fff', flexGrow: 1 }}>
@@ -140,7 +137,7 @@ export function AdminDashboardScreen({ ui: propUi, onNavigate, sessionProfile, t
                         <Text style={{ color: theme.rose, fontWeight: '600', fontSize: 13 }}>{alert.severity === 'high' || alert.severity === 'CRITICAL' ? 'Critique' : 'Système'}</Text>
                         <Text style={[styles.metaText, { fontSize: 11 }]}>{alert.created_at}</Text>
                       </View>
-                      <Text style={[styles.bodyText, { color: theme.text }]}>{alert.title || "Erreur Interne (IntegrityError)"}</Text>
+                      <Text style={[styles.bodyText, { color: theme.text }]}>{alert.title || "Alerte système"}</Text>
                     </View>
                   </View>
                 ))
@@ -643,24 +640,23 @@ export function AdminLogsScreen({ ui: propUi, sessionProfile }: any) {
   const [activeTab, setActiveTab] = useState<'system' | 'chatbot'>('system');
   const [logs, setLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
     setLoading(true);
-    
+    setError(null);
+
     const loadLogs = async () => {
       try {
-        const res = activeTab === 'system' 
-          ? await adminService.fetchLogs() 
+        const res = activeTab === 'system'
+          ? await adminService.fetchLogs()
           : await adminService.fetchChatbotLogs();
         if (mounted) setLogs(res || []);
       } catch (e) {
         if (mounted) {
-          if (activeTab === 'system') {
-            setLogs([{id: 1, action: "FETCH_ERROR", details: "Could not connect to history service", timestamp: new Date().toISOString()}]);
-          } else {
-            setLogs([{id: 1, query: "Erreur", response: "Impossible de récupérer les logs d'audit du Chatbot IA", risk_level: "high", created_at: new Date().toISOString()}]);
-          }
+          setLogs([]);
+          setError("Impossible de récupérer les logs pour le moment.");
         }
       } finally {
         if (mounted) setLoading(false);
@@ -693,8 +689,13 @@ export function AdminLogsScreen({ ui: propUi, sessionProfile }: any) {
         </Pressable>
       </View>
 
-      {loading ? <ActivityIndicator color={theme.sky} style={{ marginTop: 24 }} /> : (
+      {loading ? <ActivityIndicator color={theme.sky} style={{ marginTop: 24 }} /> : error ? (
+        <Text style={[styles.metaText, { fontStyle: 'italic', paddingVertical: 16, textAlign: 'center', color: theme.rose }]}>{error}</Text>
+      ) : (
         activeTab === 'system' ? (
+          logs.length === 0 ? (
+            <Text style={[styles.metaText, { fontStyle: 'italic', paddingVertical: 16, textAlign: 'center' }]}>Aucun log système disponible.</Text>
+          ) : (
           logs.map((l: any) => (
             <View key={l.id || Math.random()} style={{ paddingVertical: 12, borderBottomWidth: 1, borderColor: theme.line }}>
               <View style={styles.rowBetween}>
@@ -704,6 +705,7 @@ export function AdminLogsScreen({ ui: propUi, sessionProfile }: any) {
               <Text style={styles.metaText}>{l.details}</Text>
             </View>
           ))
+          )
         ) : (
           logs.length === 0 ? (
             <Text style={[styles.metaText, { fontStyle: 'italic', paddingVertical: 16, textAlign: 'center' }]}>Aucun log d'IA disponible.</Text>

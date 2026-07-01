@@ -50,8 +50,6 @@ export function NotificationsScreen({
       <SectionHeader
         icon="bell"
         title="Centre de notifications"
-        action={hasUnread ? "Tout marquer comme lu" : undefined}
-        onAction={() => onMarkRead()}
         ui={ui}
       />
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>

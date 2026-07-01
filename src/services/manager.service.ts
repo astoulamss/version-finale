@@ -66,8 +66,27 @@ export const managerService = {
 };
 
 export const fetchEmployeeDetail = async (id: number): Promise<any> => {
-  const response = await api.get(`/api/employees/${id}/manager-view`);
-  return response.data;
+  // /api/employees/{id}/manager-view n'existe pas côté backend : on compose la
+  // fiche employé (/api/employees/{id}) avec son score de risque d'équipe
+  // (/api/manager/risks), au format plat attendu par ManagerEmployeeDetailScreen.
+  const [employeeRes, risksRes] = await Promise.all([
+    api.get(`/api/employees/${id}`),
+    api.get('/api/manager/risks'),
+  ]);
+
+  const employee = employeeRes.data;
+  const risk = (risksRes.data || []).find((r: any) => r.employee_id === id);
+
+  return {
+    ...employee,
+    prenom: employee.user?.prenom,
+    nom: employee.user?.nom,
+    position: employee.position?.title ?? 'Non renseigné',
+    department: employee.department?.name ?? 'Non renseigné',
+    turnover_risk: risk?.turnover_risk ?? null,
+    burnout_risk: risk?.burnout_risk ?? null,
+    engagement_score: risk?.engagement_risk ?? null,
+  };
 };
 
 export const fetchTeamOnboarding = async (): Promise<any[]> => {

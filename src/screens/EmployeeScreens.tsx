@@ -220,7 +220,7 @@ export function LeaveRequestModal({ open, onClose, triggerFeedback, ui, initialD
 
             {showPicker && (
               <View style={{ backgroundColor: theme.background, borderRadius: 12, padding: 12, marginBottom: 16 }}>
-                <DateTimePicker
+                <DateTimePicker themeVariant="light" textColor="#000000" 
                   value={currentPickerDate}
                   mode="date"
                   display={Platform.OS === "ios" ? "inline" : "default"}
@@ -427,13 +427,11 @@ export function MobilityScreen({ ui, triggerFeedback }: { ui: Ui, triggerFeedbac
     <View style={styles.stack}>
       <AICard ui={ui}>
         <Text style={styles.heroTitle}>Mobilité interne</Text>
-        <Text style={styles.heroText}>L'IA a identifié 3 opportunités correspondant à votre profil "Développeuse Mobile".</Text>
+        <Text style={styles.heroText}>La mise en relation IA avec des opportunités internes n'est pas encore disponible dans cette version.</Text>
       </AICard>
       <SectionHeader icon="briefcase" title="Opportunités" ui={ui} />
-      <Card onPress={() => triggerFeedback("Fiche de poste ouverte")} ui={ui}>
-        <Text style={styles.cardTitle}>Tech Lead Mobile</Text>
-        <Text style={styles.mutedText}>Paris • Hybride • 100% match</Text>
-        <View style={{ marginTop: 10 }}><PrimaryButton icon="send" label="Postuler" onPress={() => triggerFeedback("Candidature envoyée")} ui={ui} /></View>
+      <Card ui={ui}>
+        <Text style={styles.mutedText}>Aucune opportunité pour le moment.</Text>
       </Card>
     </View>
   );
@@ -452,11 +450,14 @@ export function TicketsScreen({ ui, triggerFeedback }: { ui: Ui, triggerFeedback
     <View style={styles.stack}>
       <SectionHeader icon="tag" title="Mes Tickets RH & IT" ui={ui} />
       {loading && <Text style={styles.bodyText}>Chargement des tickets...</Text>}
+      {!loading && tickets.length === 0 && (
+        <Card ui={ui}><Text style={styles.mutedText}>Aucun ticket pour le moment.</Text></Card>
+      )}
       {tickets?.map((t) => (
         <Card key={t.id} ui={ui}>
           <View style={styles.rowBetween}>
-            <Text style={styles.cardTitle}>{t.title}</Text>
-            <StatusBadge label={t.status} tone={t.status === 'open' ? 'warning' : 'success'} ui={ui} />
+            <Text style={styles.cardTitle}>{t.subject}</Text>
+            <StatusBadge label={t.status} tone={t.status === 'open' ? 'warning' : t.status === 'resolved' || t.status === 'closed' ? 'success' : 'info'} ui={ui} />
           </View>
           <Text style={styles.bodyText}>{t.description}</Text>
         </Card>

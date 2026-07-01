@@ -117,16 +117,24 @@ export const fetchRhKpis = async (): Promise<any> => {
  * Fetch RH Alerts
  */
 export const fetchRhAlerts = async (): Promise<any[]> => {
-  // Mock ou retourne vide pour éviter l'erreur 404 car /api/alerts n'existe pas encore
-  return [];
+  try {
+    const response = await api.get('/api/alerts/');
+    return response.data;
+  } catch (e) {
+    return [];
+  }
 };
 
 /**
  * Fetch RH Tickets (Priority actions)
  */
 export const fetchRhTickets = async (): Promise<any[]> => {
-  // Mock ou retourne vide pour éviter l'erreur 404 car /api/tickets n'existe pas encore
-  return [];
+  try {
+    const response = await api.get('/api/tickets/');
+    return response.data;
+  } catch (e) {
+    return [];
+  }
 };
 
 /**

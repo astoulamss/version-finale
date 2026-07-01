@@ -11,7 +11,7 @@ class ConversationCreate(BaseModel):
 
 class ConversationOut(BaseModel):
     id: int
-    user_id: int
+    user_id: Optional[int]
     title: Optional[str]
     started_at: datetime
     ended_at: Optional[datetime]

@@ -380,11 +380,11 @@ export function ManagerOnboardingScreen({ ui, sessionProfile }: { ui: Ui, sessio
                           <Pressable onPress={() => setShowStartPicker(false)} style={{ alignItems: 'flex-end', marginBottom: 10 }}>
                             <Text style={{ color: theme.sky, fontWeight: 'bold' }}>Terminé</Text>
                           </Pressable>
-                          <DateTimePicker value={startDate ? new Date(startDate) : new Date()} mode="date" display="spinner" onChange={onChangeDate(setStartDate, setShowStartPicker)} textColor="black" />
+                          <DateTimePicker themeVariant="light" textColor="#000000" value={startDate ? new Date(startDate) : new Date()} mode="date" display="spinner" onChange={onChangeDate(setStartDate, setShowStartPicker)} />
                         </View>
                       </View>
                     </Modal>
-                  ) : <DateTimePicker value={startDate ? new Date(startDate) : new Date()} mode="date" display="default" onChange={onChangeDate(setStartDate, setShowStartPicker)} />
+                  ) : <DateTimePicker themeVariant="light" textColor="#000000"  value={startDate ? new Date(startDate) : new Date()} mode="date" display="default" onChange={onChangeDate(setStartDate, setShowStartPicker)} />
                 )}
               </View>
               <View style={{ flex: 1 }}>
@@ -400,11 +400,11 @@ export function ManagerOnboardingScreen({ ui, sessionProfile }: { ui: Ui, sessio
                           <Pressable onPress={() => setShowEndPicker(false)} style={{ alignItems: 'flex-end', marginBottom: 10 }}>
                             <Text style={{ color: theme.sky, fontWeight: 'bold' }}>Terminé</Text>
                           </Pressable>
-                          <DateTimePicker value={endDate ? new Date(endDate) : new Date()} mode="date" display="spinner" onChange={onChangeDate(setEndDate, setShowEndPicker)} textColor="black" />
+                          <DateTimePicker themeVariant="light" textColor="#000000" value={endDate ? new Date(endDate) : new Date()} mode="date" display="spinner" onChange={onChangeDate(setEndDate, setShowEndPicker)} />
                         </View>
                       </View>
                     </Modal>
-                  ) : <DateTimePicker value={endDate ? new Date(endDate) : new Date()} mode="date" display="default" onChange={onChangeDate(setEndDate, setShowEndPicker)} />
+                  ) : <DateTimePicker themeVariant="light" textColor="#000000"  value={endDate ? new Date(endDate) : new Date()} mode="date" display="default" onChange={onChangeDate(setEndDate, setShowEndPicker)} />
                 )}
               </View>
             </View>

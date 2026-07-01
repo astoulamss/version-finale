@@ -49,8 +49,8 @@ export function QvtDashboardScreen({ ui, onNavigate, triggerFeedback, sessionPro
         if (!mounted) return;
         
         // wellbeing score: engagement average_score is out of 5, convert to out of 100
-        const wellbeing = engagement?.average_score ? Math.round(engagement.average_score * 20) : 75;
-        
+        const wellbeing = engagement?.average_score != null ? Math.round(engagement.average_score * 20) : 0;
+
         // stress level: average of burnout risks in risks
         let totalBurnout = 0;
         let countBurnout = 0;
@@ -62,10 +62,10 @@ export function QvtDashboardScreen({ ui, onNavigate, triggerFeedback, sessionPro
             }
           });
         }
-        const stress = countBurnout > 0 ? Math.round(totalBurnout / countBurnout) : 32;
-        
+        const stress = countBurnout > 0 ? Math.round(totalBurnout / countBurnout) : 0;
+
         // health absences: total_hours
-        const absences = absenteeism?.total_hours ? Math.round(absenteeism.total_hours) : 12;
+        const absences = absenteeism?.total_hours != null ? Math.round(absenteeism.total_hours) : 0;
         
         // active alerts: status !== 'resolved'
         const activeAlertsCount = Array.isArray(alertsList) 

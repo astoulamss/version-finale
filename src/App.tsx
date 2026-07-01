@@ -102,6 +102,16 @@ function MainTabs({ navigation, ui, sessionProfile, chatInput, setChatInput, mes
   const isManager = isManagerRole(sessionProfile?.roleId ?? sessionProfile?.role);
   const isAdmin = isAdminRole(sessionProfile?.roleId ?? sessionProfile?.role);
 
+  const navigateSmart = (d: any) => {
+    const tabScreens = ['home', 'assistant', 'profile', 'rh_hub', 'admin_dashboard', 'admin_accounts', 'admin_alerts', 'admin_logs', 'admin_profile', 'manager_hub', 'team', 'indicateurs', 'validations'];
+    if (tabScreens.includes(d)) {
+      navigation.navigate('Main', { screen: d });
+    } else {
+      navigation.navigate(d);
+    }
+  };
+
+
   return (
     <Tab.Navigator
       tabBar={(props) => <MyCustomTabBar {...props} ui={ui} />}
@@ -112,7 +122,7 @@ function MainTabs({ navigation, ui, sessionProfile, chatInput, setChatInput, mes
           <Tab.Screen name="admin_dashboard">
             {() => (
               <ScreenWrapper ui={ui}>
-                <AdminDashboardScreen sessionProfile={sessionProfile} triggerFeedback={triggerFeedback} ui={ui} onNavigate={(dest: any) => navigation.navigate(dest)} />
+                <AdminDashboardScreen sessionProfile={sessionProfile} triggerFeedback={triggerFeedback} ui={ui} onNavigate={(dest: any) => navigateSmart(dest)} />
               </ScreenWrapper>
             )}
           </Tab.Screen>
@@ -203,10 +213,10 @@ function MainTabs({ navigation, ui, sessionProfile, chatInput, setChatInput, mes
               <ScreenWrapper ui={ui}>
                 <HomeScreen 
                   onboardingProgress={50}
-                  onNavigate={(dest: any) => navigation.navigate(dest)}
+                  onNavigate={(dest: any) => navigateSmart(dest)}
                   onAskAi={(prompt: string) => {
                     setChatInput(prompt);
-                    navigation.navigate("assistant");
+                    navigateSmart("assistant");
                   }}
                   onStartDocument={() => triggerFeedback("Document started")}
                   onSelectDocumentDetails={() => triggerFeedback("Doc details")}
@@ -280,7 +290,7 @@ function MainTabs({ navigation, ui, sessionProfile, chatInput, setChatInput, mes
           <Tab.Screen name="rh_hub">
             {() => (
               <ScreenWrapper isScrollable={false} ui={ui}>
-                <RhHubScreen sessionProfile={sessionProfile} triggerFeedback={triggerFeedback} ui={ui} onNavigate={(dest: any) => navigation.navigate(dest)} />
+                <RhHubScreen sessionProfile={sessionProfile} triggerFeedback={triggerFeedback} ui={ui} onNavigate={(dest: any) => navigateSmart(dest)} />
               </ScreenWrapper>
             )}
           </Tab.Screen>
@@ -303,7 +313,7 @@ function MainTabs({ navigation, ui, sessionProfile, chatInput, setChatInput, mes
                   onEditProfile={() => triggerFeedback("Edit Profile")}
                   onOpenPrivacy={() => triggerFeedback("Privacy")}
                   onLogout={() => setShowLogout(true)}
-                  onNavigate={(dest: any) => navigation.navigate(dest)}
+                  onNavigate={(dest: any) => navigateSmart(dest)}
                   sessionProfile={sessionProfile} 
                   setBiometricEnabled={setBiometricEnabled}
                   setIsDark={(val) => setThemeMode(val ? "dark" : "light")}
@@ -324,10 +334,10 @@ function MainTabs({ navigation, ui, sessionProfile, chatInput, setChatInput, mes
               <ScreenWrapper ui={ui}>
                 <HomeScreen 
                   onboardingProgress={50}
-                  onNavigate={(dest: any) => navigation.navigate(dest)}
+                  onNavigate={(dest: any) => navigateSmart(dest)}
                   onAskAi={(prompt: string) => {
                     setChatInput(prompt);
-                    navigation.navigate("assistant");
+                    navigateSmart("assistant");
                   }}
                   onStartDocument={() => triggerFeedback("Document started")}
                   onSelectDocumentDetails={() => triggerFeedback("Doc details")}
@@ -394,14 +404,14 @@ function MainTabs({ navigation, ui, sessionProfile, chatInput, setChatInput, mes
           <Tab.Screen name="team">
             {() => (
               <ScreenWrapper ui={ui}>
-                <ManagerTeamScreen sessionProfile={sessionProfile} ui={ui} onNavigate={(dest: any) => navigation.navigate(dest)} onSelectEmployee={() => {}} />
+                <ManagerTeamScreen sessionProfile={sessionProfile} ui={ui} onNavigate={(dest: any) => navigateSmart(dest)} onSelectEmployee={() => {}} />
               </ScreenWrapper>
             )}
           </Tab.Screen>
           <Tab.Screen name="manager_hub">
             {() => (
               <ScreenWrapper ui={ui}>
-                <ManagerHubScreen sessionProfile={sessionProfile} ui={ui} onNavigate={(dest: any) => navigation.navigate(dest)} />
+                <ManagerHubScreen sessionProfile={sessionProfile} ui={ui} onNavigate={(dest: any) => navigateSmart(dest)} />
               </ScreenWrapper>
             )}
           </Tab.Screen>
@@ -417,7 +427,7 @@ function MainTabs({ navigation, ui, sessionProfile, chatInput, setChatInput, mes
                   onEditProfile={() => triggerFeedback("Edit Profile")}
                   onOpenPrivacy={() => triggerFeedback("Privacy")}
                   onLogout={() => setShowLogout(true)}
-                  onNavigate={(dest: any) => navigation.navigate(dest)}
+                  onNavigate={(dest: any) => navigateSmart(dest)}
                   sessionProfile={sessionProfile} 
                   setBiometricEnabled={setBiometricEnabled}
                   setIsDark={(val) => setThemeMode(val ? "dark" : "light")}
@@ -438,10 +448,10 @@ function MainTabs({ navigation, ui, sessionProfile, chatInput, setChatInput, mes
               <ScreenWrapper ui={ui}>
                 <HomeScreen 
                   onboardingProgress={50}
-                  onNavigate={(dest: any) => navigation.navigate(dest)}
+                  onNavigate={(dest: any) => navigateSmart(dest)}
                   onAskAi={(prompt: string) => {
                     setChatInput(prompt);
-                    navigation.navigate("assistant");
+                    navigateSmart("assistant");
                   }}
                   onStartDocument={() => triggerFeedback("Document started")}
                   onSelectDocumentDetails={() => triggerFeedback("Doc details")}
@@ -457,7 +467,7 @@ function MainTabs({ navigation, ui, sessionProfile, chatInput, setChatInput, mes
           <Tab.Screen name="rh_hub">
             {() => (
               <ScreenWrapper isScrollable={false} ui={ui}>
-                <RhHubScreen sessionProfile={sessionProfile} triggerFeedback={triggerFeedback} ui={ui} onNavigate={(dest: any) => navigation.navigate(dest)} />
+                <RhHubScreen sessionProfile={sessionProfile} triggerFeedback={triggerFeedback} ui={ui} onNavigate={(dest: any) => navigateSmart(dest)} />
               </ScreenWrapper>
             )}
           </Tab.Screen>
@@ -524,7 +534,7 @@ function MainTabs({ navigation, ui, sessionProfile, chatInput, setChatInput, mes
                   onEditProfile={() => triggerFeedback("Edit Profile")}
                   onOpenPrivacy={() => triggerFeedback("Privacy")}
                   onLogout={() => setShowLogout(true)}
-                  onNavigate={(dest: any) => navigation.navigate(dest)}
+                  onNavigate={(dest: any) => navigateSmart(dest)}
                   sessionProfile={sessionProfile} 
                   setBiometricEnabled={setBiometricEnabled}
                   setIsDark={(val) => setThemeMode(val ? "dark" : "light")}

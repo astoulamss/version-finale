@@ -193,7 +193,7 @@ function AbsenceRequestModal({ open, onClose, triggerFeedback, ui, sessionProfil
             
             {showPicker && (
               <View style={{ backgroundColor: theme.background, borderRadius: 12, padding: 12, marginBottom: 16 }}>
-                <DateTimePicker
+                <DateTimePicker themeVariant="light" textColor="#000000" 
                   value={currentPickerDate}
                   mode="date"
                   display={Platform.OS === "ios" ? "inline" : "default"}

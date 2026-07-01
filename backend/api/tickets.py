@@ -60,7 +60,7 @@ def create_ticket(
         subject=ticket.subject,
         description=ticket.description,
         employee_id=target_id,
-        status=TicketStatusEnum.OPEN
+        status="open"
     )
     db.add(new_ticket)
     db.commit()

@@ -6,6 +6,7 @@ import { Ui } from '../types';
 import { Card } from '../components/ui/Card';
 import { documentsService } from '../services/documents.service';
 import api from '../services/api';
+import { downloadAndOpenDocument } from '../utils/document.utils';
 
 export function HrDocumentsScreen({ ui }: { ui: Ui }) {
   const { styles, theme } = ui;
@@ -17,6 +18,12 @@ export function HrDocumentsScreen({ ui }: { ui: Ui }) {
   
   // Search state
   const [searchQuery, setSearchQuery] = useState('');
+  const [actionMessage, setActionMessage] = useState('');
+
+  const notifyNotAvailable = () => {
+    setActionMessage("Fonctionnalité bientôt disponible.");
+    setTimeout(() => setActionMessage(''), 3000);
+  };
 
   const loadData = async () => {
     try {
@@ -59,13 +66,7 @@ export function HrDocumentsScreen({ ui }: { ui: Ui }) {
   };
 
   const handleDownload = async (doc: any) => {
-    try {
-      const safeTitle = doc.title.replace(/[^\w\s-]/g, '').replace(/\s+/g, '_');
-      const filename = `${safeTitle}.pdf`;
-      await documentsService.downloadDocument(doc.id, filename);
-    } catch (e: any) {
-      alert(e.response?.data?.detail || "Erreur lors du téléchargement");
-    }
+    await downloadAndOpenDocument(doc.id, doc.title || "Document");
   };
 
   const getEmployeeName = (id: number) => {
@@ -120,19 +121,23 @@ export function HrDocumentsScreen({ ui }: { ui: Ui }) {
               <Text style={[styles.cardTitle, { fontSize: 20 }]}>Dossier Documentaire</Text>
             </View>
             <View style={styles.rowStart}>
-              <Pressable style={{ backgroundColor: theme.surfaceAlt, paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8 }}>
+              <Pressable onPress={notifyNotAvailable} style={{ backgroundColor: theme.surfaceAlt, paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8 }}>
                 <Text style={{ color: theme.navy, fontWeight: '700', fontSize: 13 }}>Importer Fichier</Text>
               </Pressable>
-              <Pressable style={{ backgroundColor: theme.surfaceAlt, paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8 }}>
+              <Pressable onPress={notifyNotAvailable} style={{ backgroundColor: theme.surfaceAlt, paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8 }}>
                 <Text style={{ color: theme.navy, fontWeight: '700', fontSize: 13 }}>Créer Manuel</Text>
               </Pressable>
-              <Pressable style={{ backgroundColor: '#6366F1', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Pressable onPress={notifyNotAvailable} style={{ backgroundColor: '#6366F1', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                 <Feather name="zap" size={14} color="#ffffff" />
                 <Text style={{ color: '#ffffff', fontWeight: '700', fontSize: 13 }}>Générer par IA</Text>
               </Pressable>
             </View>
           </View>
-          
+
+          {actionMessage ? (
+            <Text style={[styles.metaText, { color: theme.sky, marginBottom: 12 }]}>{actionMessage}</Text>
+          ) : null}
+
           <View style={styles.rowBetween}>
             <Text style={[styles.bodyStrong, { fontSize: 16 }]}>Documents générés ou importés par les RH</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: theme.background, borderColor: theme.line, borderWidth: 1, borderRadius: 6, paddingHorizontal: 12, paddingVertical: 6, width: 300 }}>
@@ -215,7 +220,7 @@ export function HrDocumentsScreen({ ui }: { ui: Ui }) {
                     
                     {/* Actions */}
                     <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', gap: 8 }}>
-                      <Pressable style={{ padding: 6, backgroundColor: theme.surfaceAlt, borderRadius: 6 }}>
+                      <Pressable onPress={() => handleDownload(doc)} style={{ padding: 6, backgroundColor: theme.surfaceAlt, borderRadius: 6 }}>
                         <Feather name="eye" size={16} color={theme.navy} />
                       </Pressable>
                       <Pressable onPress={() => handleDownload(doc)} style={{ padding: 6, backgroundColor: theme.surfaceAlt, borderRadius: 6 }}>

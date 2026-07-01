@@ -48,8 +48,28 @@ def import_data():
             
         print("Re-enabling foreign key constraints...")
         conn.execute(text("SET session_replication_role = 'origin';"))
-        
+
+        print("Resynchronizing sequences with imported data...")
+        reset_sequences(conn, data.keys())
+
         print("Import successful!")
+
+
+def reset_sequences(conn, table_names):
+    """Après un import avec IDs explicites, les séquences PostgreSQL restent en retard
+    sur les IDs réellement présents, ce qui provoque des erreurs 'duplicate key' au
+    premier INSERT suivant. On les recale sur MAX(id) pour chaque table importée."""
+    for table_name in table_names:
+        seq = conn.execute(
+            text("SELECT pg_get_serial_sequence(:table, 'id')"),
+            {"table": table_name}
+        ).scalar()
+        if not seq:
+            continue
+        conn.execute(text(
+            f"SELECT setval('{seq}', COALESCE((SELECT MAX(id) FROM \"{table_name}\"), 1), "
+            f"(SELECT MAX(id) IS NOT NULL FROM \"{table_name}\"))"
+        ))
 
 if __name__ == '__main__':
     if sys.stdout.encoding != 'utf-8':

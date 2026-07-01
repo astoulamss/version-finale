@@ -8,6 +8,7 @@ import { SectionHeader } from "../components/ui/SectionHeader";
 import { PrimaryButton, SecondaryButton } from "../components/ui/Button";
 import { Ui, EmployeeProfile } from "../types";
 import { isRhRole } from "../lib/auth";
+import { analyticsService } from "../services/analytics.service";
 
 export function RecrutementView({ ui,  sessionProfile }: { ui: Ui;  sessionProfile: EmployeeProfile }) {
   const { styles, theme } = ui;
@@ -138,11 +139,17 @@ export function RapportsView({ ui,  sessionProfile }: { ui: Ui;  sessionProfile:
     const load = async () => {
       setLoading(true);
       try {
-        const { fetchRhKpis } = require('../services/dashboard.service');
-        const data = await fetchRhKpis();
-        if (mounted) setKpis(data ?? { active_employees: 142, turnover_rate: "4.2", absenteeism_rate: "2.1", open_positions: 5 });
+        const data = await analyticsService.fetchDashboard();
+        if (mounted) {
+          setKpis({
+            active_employees: data.demographics.total_active,
+            turnover_rate: data.turnover_rate,
+            absenteeism_rate: data.absence_rate,
+            open_positions: 0,
+          });
+        }
       } catch {
-        if (mounted) setKpis({ active_employees: 142, turnover_rate: "4.2", absenteeism_rate: "2.1", open_positions: 5 });
+        if (mounted) setKpis(null);
       } finally {
         if (mounted) setLoading(false);
       }
@@ -158,9 +165,9 @@ export function RapportsView({ ui,  sessionProfile }: { ui: Ui;  sessionProfile:
     setMessage("");
     setTimeout(() => {
       setExporting(false);
-      setMessage("Export PDF généré avec succès !");
+      setMessage("L'export PDF n'est pas encore disponible dans cette version.");
       setTimeout(() => setMessage(""), 3000);
-    }, 1500);
+    }, 500);
   };
 
   return (
@@ -168,6 +175,12 @@ export function RapportsView({ ui,  sessionProfile }: { ui: Ui;  sessionProfile:
       <SectionHeader icon="pie-chart" title="Rapports et Statistiques" ui={ui} />
       
       {loading && <ActivityIndicator color={theme.sky} style={{ marginVertical: 20 }} />}
+
+      {!loading && !kpis && (
+        <Card ui={ui}>
+          <Text style={styles.bodyText}>Impossible de charger les statistiques pour le moment.</Text>
+        </Card>
+      )}
 
       {!loading && kpis && (
         <AICard ui={ui}>

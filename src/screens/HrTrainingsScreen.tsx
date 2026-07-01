@@ -327,7 +327,7 @@ export const HrTrainingsScreen: React.FC<Props> = ({ sessionProfile, triggerFeed
                                 <Text style={{ color: theme.sky, fontWeight: 'bold', fontSize: 16 }}>Terminé</Text>
                               </Pressable>
                             </View>
-                            <DateTimePicker
+                            <DateTimePicker themeVariant="light" textColor="#000000" 
                               value={startDate ? new Date(startDate) : new Date()}
                               mode="date"
                               display="spinner"
@@ -337,7 +337,7 @@ export const HrTrainingsScreen: React.FC<Props> = ({ sessionProfile, triggerFeed
                         </View>
                       </Modal>
                     ) : (
-                      <DateTimePicker
+                      <DateTimePicker themeVariant="light" textColor="#000000" 
                         value={startDate ? new Date(startDate) : new Date()}
                         mode="date"
                         display="default"
@@ -364,7 +364,7 @@ export const HrTrainingsScreen: React.FC<Props> = ({ sessionProfile, triggerFeed
                                 <Text style={{ color: theme.sky, fontWeight: 'bold', fontSize: 16 }}>Terminé</Text>
                               </Pressable>
                             </View>
-                            <DateTimePicker
+                            <DateTimePicker themeVariant="light" textColor="#000000" 
                               value={endDate ? new Date(endDate) : new Date()}
                               mode="date"
                               display="spinner"
@@ -374,7 +374,7 @@ export const HrTrainingsScreen: React.FC<Props> = ({ sessionProfile, triggerFeed
                         </View>
                       </Modal>
                     ) : (
-                      <DateTimePicker
+                      <DateTimePicker themeVariant="light" textColor="#000000" 
                         value={endDate ? new Date(endDate) : new Date()}
                         mode="date"
                         display="default"

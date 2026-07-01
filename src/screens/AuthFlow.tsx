@@ -73,8 +73,8 @@ export function AuthFlow({
 }) {
   const { styles, theme } = ui;
   const pulse = useRef(new Animated.Value(0.55)).current;
-  const [loginEmail, setLoginEmail] = useState("sarah.benali@ydays.company");
-  const [loginPassword, setLoginPassword] = useState("YDAYS2026!");
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
   const [selectedRole, setSelectedRole] = useState<UserRoleId>("collaborateur");
   const [authError, setAuthError] = useState("");
   const [isLoading, setIsLoading] = useState(false);

@@ -43,7 +43,6 @@ export function HomeScreen({
   const isRh = isRhRole(roleId);
   const isManager = isManagerRole(roleId);
   const { styles, theme } = ui;
-  console.log("HomeScreen Render ->", { roleId, isRh, isManager, profile: sessionProfile });
 
   const [leaveBalances, setLeaveBalances] = useState<LeaveBalanceResponse[]>([]);
   const [documents, setDocuments] = useState<DocumentResponse[]>([]);
@@ -59,6 +58,7 @@ export function HomeScreen({
   const [myAbsences, setMyAbsences] = useState<any[]>([]);
   const [recentHistory, setRecentHistory] = useState<any[]>([]);
   const [lateTasksCount, setLateTasksCount] = useState<number>(0);
+  const [availableFormations, setAvailableFormations] = useState<any[]>([]);
 
   const loadData = async () => {
     setLoading(true);
@@ -85,14 +85,16 @@ export function HomeScreen({
           const { fetchMyLeaves } = require('../services/dashboard.service');
           const { onboardingService } = require('../services/onboarding.service');
           const { absencesService } = require('../services/absences.service');
-          const [bals, docs, notifs, leaves, plans, absences, history] = await Promise.all([
+          const { employeeService } = require('../services/employee.service');
+          const [bals, docs, notifs, leaves, plans, absences, history, formations] = await Promise.all([
             fetchMyLeaveBalances(),
             fetchMyDocuments(),
             fetchMyNotifications(),
             fetchMyLeaves(),
             onboardingService.fetchMyPlans().catch(() => []),
             absencesService.fetchMyAbsences().catch(() => []),
-            fetchMyHistory().catch(() => [])
+            fetchMyHistory().catch(() => []),
+            employeeService.fetchFormations().catch(() => [])
           ]);
           setLeaveBalances(bals);
           setDocuments(docs);
@@ -100,6 +102,7 @@ export function HomeScreen({
           setMyLeaves(leaves);
           setMyAbsences(absences || []);
           setRecentHistory(history || []);
+          setAvailableFormations(formations || []);
           
           let tasksCount = 0;
           const today = new Date();
@@ -147,7 +150,7 @@ export function HomeScreen({
           <Text style={[styles.heroTitle, { fontSize: 24, marginBottom: 4 }]}>
             Bonjour {sessionProfile.firstName || "Collaborateur"} 👋
           </Text>
-          <Text style={styles.mutedText}>{sessionProfile.role || "Employé"} — {sessionProfile.department || "Informatique"}</Text>
+          <Text style={styles.mutedText}>{sessionProfile.role || "Employé"} — {sessionProfile.department || "Non renseigné"}</Text>
         </View>
 
         <Card tone="info" ui={ui}>
@@ -234,7 +237,7 @@ export function HomeScreen({
           <Text style={[styles.heroTitle, { fontSize: 24, marginBottom: 4 }]}>
             Bonjour {sessionProfile.firstName || "Collaborateur"} 👋
           </Text>
-          <Text style={styles.mutedText}>{sessionProfile.role || "Employé"} — {sessionProfile.department || "Informatique"}</Text>
+          <Text style={styles.mutedText}>{sessionProfile.role || "Employé"} — {sessionProfile.department || "Non renseigné"}</Text>
         </View>
 
         <Card tone="info" ui={ui}>
@@ -334,7 +337,7 @@ export function HomeScreen({
         <Text style={[styles.heroTitle, { fontSize: 24, marginBottom: 4 }]}>
           Bonjour {sessionProfile.firstName || "Collaborateur"} 👋
         </Text>
-        <Text style={styles.mutedText}>{sessionProfile.role || "Employé"} — {sessionProfile.department || "Informatique"}</Text>
+        <Text style={styles.mutedText}>{sessionProfile.role || "Employé"} — {sessionProfile.department || "Non renseigné"}</Text>
       </View>
 
       {/* BLOC 2 — ACTION PRIORITAIRE DU JOUR */}
@@ -415,7 +418,7 @@ export function HomeScreen({
           <Text style={styles.mutedText}>Ancienneté</Text>
         </Card>
         <Card style={[styles.card, { width: "48%", marginBottom: 8 }]} ui={ui}>
-          <Text style={[styles.progressValue, { fontSize: 24 }]}>2</Text>
+          <Text style={[styles.progressValue, { fontSize: 24 }]}>{availableFormations.length}</Text>
           <Text style={styles.mutedText}>Formations dispo.</Text>
         </Card>
         <Card style={[styles.card, { width: "48%", marginBottom: 8 }]} ui={ui}>
